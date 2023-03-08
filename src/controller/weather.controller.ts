@@ -1,0 +1,33 @@
+import { Controller, Get, Inject, Query } from '@midwayjs/core';
+import { WeatherService } from '../service/weather.service';
+import { Context } from '@midwayjs/koa';
+
+@Controller('/')
+export class WeatherController {
+  @Inject()
+  weatherService: WeatherService;
+
+  @Inject()
+  ctx: Context;
+
+  @Get('/weather')
+  async getWeatherInfo(@Query('cityId') cityId: string): Promise<void> {
+    const result = await this.weatherService.getWeather(cityId);
+    console.log(result);
+
+    if (result) {
+      await this.ctx.render('info', result.weatherinfo);
+    }
+  }
+
+  @Get('/weather1')
+  async getWeatherInfo1(): Promise<string> {
+    // 这里是 http 的返回，可以直接返回字符串，数字，JSON，Buffer 等
+    return 'Hello Weather!';
+  }
+
+  @Get('/weather2')
+  async getWeatherInfo2(@Query('id') cityId: string): Promise<string> {
+    return cityId;
+  }
+}
